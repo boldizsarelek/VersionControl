@@ -22,7 +22,7 @@ namespace UserMaintenance
             
             lblFullName.Text = Resource1.FullName;
             btnAdd.Text = Resource1.Add;
-
+            btndelete.Text = Resource1.Delete;
 
             listBox1.DataSource = users;
             listBox1.ValueMember = "ID";
@@ -60,6 +60,21 @@ namespace UserMaintenance
                     MessageBox.Show(ex.Message);
                 }
             }
+        }
+
+        private void btndelete_Click(object sender, EventArgs e)
+        {
+
+            User userToRemove = (User)listBox1.SelectedItem;
+            try
+            {
+                users.Remove(userToRemove);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
         }
     }
 }
