@@ -17,22 +17,46 @@ namespace Week06
     {
 
         BindingList<RateData> Rates = new BindingList<RateData>();
-        
+        BindingList<string> Currencies = new BindingList<string>();
         public Form1()
         {
             InitializeComponent();
 
             dataGridView1.DataSource = Rates;
+            comboBox1.DataSource = Currencies;
+            LoadCurrencies();
             RefreshData();
+        }
+
+        private void LoadCurrencies()
+        {
+            var mnbService = new MNBArfolyamServiceSoapClient();
+
+            var response = mnbService.GetCurrencies(new GetCurrenciesRequestBody());
+
+            var result = response.GetCurrenciesResult;
+
+            var xml = new XmlDocument();
+            xml.LoadXml(result);
+
+            string currency;
+            foreach (XmlElement element in xml.DocumentElement)
+            {
+
+                for (int i = 0; i < element.ChildNodes.Count; i++)
+                {
+                    var childElement = (XmlElement)element.ChildNodes[i];
+                    currency = childElement.InnerText;
+                    Currencies.Add(currency);
+                }
+            }
         }
 
         private void RefreshData()
         {
-
             Rates.Clear();
 
             var mnbService = new MNBArfolyamServiceSoapClient();
-
             var request = new GetExchangeRatesRequestBody()
             {
                 currencyNames = (string)comboBox1.SelectedItem,
@@ -62,6 +86,10 @@ namespace Week06
                 rate.Date = DateTime.Parse(element.GetAttribute("date"));
 
                 var childElement = (XmlElement)element.ChildNodes[0];
+                if (childElement == null)
+                {
+                    continue;
+                }
                 rate.Currency = childElement.GetAttribute("curr");
 
                 var unit = decimal.Parse(childElement.GetAttribute("unit"));
@@ -90,8 +118,6 @@ namespace Week06
             chartArea.AxisX.MajorGrid.Enabled = false;
             chartArea.AxisY.MajorGrid.Enabled = false;
             chartArea.AxisY.IsStartedFromZero = false;
-
-
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
