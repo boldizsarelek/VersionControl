@@ -79,5 +79,17 @@ namespace Week08
         {
             Factory = new BallFactory();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var button = (Button)sender;
+            var colorPicker = new ColorDialog();
+            colorPicker.Color = button.BackColor;
+            if (colorPicker.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+            button.BackColor = colorPicker.Color;
+        }
     }
 }
