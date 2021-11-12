@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Week08
 {
-    interface IToyFactory
+    public interface IToyFactory
     {
         Toy CreateNew();
     }

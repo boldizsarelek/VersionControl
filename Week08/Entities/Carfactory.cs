@@ -10,7 +10,7 @@ namespace Week08
     {
         public Toy CreateNew()
         {
-            return new Ball();
+            return new Car();
         }
     }
 }

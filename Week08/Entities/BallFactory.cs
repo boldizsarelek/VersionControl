@@ -8,7 +8,6 @@ namespace Week08
 {
     public class BallFactory : IToyFactory
     {
-
         public Toy CreateNew()
         {
             return new Ball();
