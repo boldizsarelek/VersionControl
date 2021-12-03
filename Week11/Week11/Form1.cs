@@ -18,16 +18,21 @@ namespace Week11
         List<BirthProbability> BirthProbabilities = new List<BirthProbability>();
         List<DeathProbability> DeathProbabilities = new List<DeathProbability>();
 
+        Dictionary<int, int> NbrOfMales = new Dictionary<int, int>();
+        Dictionary<int, int> NbrOfFemales = new Dictionary<int, int>();
+
         Random rng = new Random(1234);
         public Form1()
         {
             InitializeComponent();
-
-            Population = GetPopulation(@"C:\Temp\nép.csv");
+           
             BirthProbabilities = GetBirthProbabilities(@"C:\Temp\születés.csv");
             DeathProbabilities = GetDeathProbabilities(@"C:\Temp\halál.csv");
+        }
 
-            for (int year = 2005; year <= 2024; year++)
+        private void Simulation()
+        {
+            for (int year = 2005; year <= numericUpDown1.Value; year++)
             {
                 for (int i = 0; i < Population.Count; i++)
                 {
@@ -37,15 +42,18 @@ namespace Week11
                 int nbrOfMales = (from x in Population
                                   where x.Gender == Gender.Male
                                   && x.IsAlive
-                                  
+
                                   select x).Count();
+
+                NbrOfMales.Add(year,nbrOfMales);
 
                 int nbrOfFemales = (from x in Population
                                     where x.Gender == Gender.Female
                                     && x.IsAlive
-                                    
+
                                     select x).Count();
 
+                NbrOfFemales.Add(year, nbrOfFemales);
                 Console.WriteLine(string.Format("Év:{0} Fiúk:{1} Lányok:{2}", year, nbrOfMales, nbrOfFemales));
             }
         }
@@ -142,6 +150,34 @@ namespace Week11
                     newBorn.Gender = (Gender)rng.Next(1, 3);
                     Population.Add(newBorn);
                 }
+            }
+        }
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            
+            Population = GetPopulation(textBox1.Text);
+            richTextBox1.Clear();
+            Simulation();
+            DisplayResults();
+        }
+
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            if (DialogResult.OK == ofd.ShowDialog())
+            {
+                textBox1.Text = ofd.FileName;
+            }
+        }
+
+        private void DisplayResults()
+        {
+            for (int year = 2005; year < numericUpDown1.Value; year++)
+            {
+                richTextBox1.Text += $"Szimulációs év: {year} \n" +
+                                       $"\tFiúk: {NbrOfMales[year]}\n" +
+                                       $"\tLányok: {NbrOfFemales[year]}\n";
             }
         }
     }
