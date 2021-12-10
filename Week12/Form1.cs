@@ -22,6 +22,8 @@ namespace Week12
             ga = gc.ActivateDisplay();
             Controls.Add(ga);
 
+            //gc.AddPlayer();
+            //gc.Start(true);
         }
     }
 }
